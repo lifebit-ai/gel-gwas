@@ -66,6 +66,17 @@ process pre_gwas_filtering {
 thres_m=$1
 thres_HWE=$2
 
+add argument (could be fixed) also for plate_keys/IDs for unrelated individuals:
+/re_gecip/BRS/thanos/aggV2_GRM_data/aggV2_bedmerge_30KSNPs_labkeyV9_unrelatedKING.fam
+
+for mock test simply exlude "--keep /re_gecip/BRS/thanos/aggV2_GRM_data/aggV2_bedmerge_30KSNPs_labkeyV9_unrelatedKING.fam" OR
+
+replace with mock list of IDs (say 10 first).
+FID IID
+ID1 ID1
+ID2 ID2
+
+
 default for both = 1e-5
 
 #Filter missingness
