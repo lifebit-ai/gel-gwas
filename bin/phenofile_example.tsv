@@ -1,4 +1,18 @@
+version 1:
 phenofiles  phenocols phenocovariates outputtag
 S3:/phe.txt covid1 PC1,PC2,PC3  outputtag
 S3:/phe.txt covid2 PC1,PC2,PC3 outputtag
 S3:/phe.txt covid2 PC1,PC2 outputtag
+
+version 2:
+phenocols phenocovariates outputtag
+covid1 PC1,PC2,PC3  outputtag
+
+
+ind Covid1 covid2 covid3  PC1 PC2 PC3
+1 NA  0 1 NA  NA 0
+2 0 0 0 NA 0 10
+3 0 NA 0 1.1 1.5 1.6
+
+
+it will take only individual 3. Double-check that SAIGE can remove NA individuals (in phenos OR covariates).
