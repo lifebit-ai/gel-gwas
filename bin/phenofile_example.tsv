@@ -1,14 +1,16 @@
-version 1:
+version 1 (GWAS design file):
 phenofiles  phenocols phenocovariates outputtag
 S3:/phe.txt covid1 PC1,PC2,PC3  outputtag
 S3:/phe.txt covid2 PC1,PC2,PC3 outputtag
 S3:/phe.txt covid2 PC1,PC2 outputtag
 
-version 2:
+version 2 (create a GWAS design file, single phenofile and is provided as a parameter):
+
 phenocols phenocovariates outputtag
 covid1 PC1,PC2,PC3  outputtag
+covid2 PC1,PC2,PC3  outputtag
 
-
+RESULT example:
 ind Covid1 covid2 covid3  PC1 PC2 PC3
 1 NA  0 1 NA  NA 0
 2 0 0 0 NA 0 10
@@ -16,3 +18,9 @@ ind Covid1 covid2 covid3  PC1 PC2 PC3
 
 
 it will take only individual 3. Double-check that SAIGE can remove NA individuals (in phenos OR covariates).
+
+TODO: input validation for phenofile
+TODO: cohort browser as input for phenofile
+
+IDEA: csv file with chunks is fixed. User can subset to specific chunks or regions (chromosomes).
+interval list files
