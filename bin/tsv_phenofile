@@ -1,0 +1,4 @@
+phenofiles  phenocols phenocovariates outputtag
+S3:/phe.txt covid1 PC1,PC2,PC3  outputtag
+S3:/phe.txt covid2 PC1,PC2,PC3 outputtag
+S3:/phe.txt covid2 PC1,PC2 outputtag
