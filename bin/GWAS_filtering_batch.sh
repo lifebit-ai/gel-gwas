@@ -1,5 +1,6 @@
 #Autosomes GWAS filtering
-for anc in ALL EUR SAS AFR; do
+for anc in ALL EUR SAS AFR; 
+do
     for ANA in phen_ANA_C1_V2 phen_ANA_C2_V2;
     do
         >/re_gecip/BRS/gwas_workflow/GWASQC_filter_lists/aggV2_q0_005_wholecohortR9_${ANA}_${anc}.misHWEfiltered
