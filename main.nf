@@ -66,6 +66,8 @@ process pre_gwas_filtering {
 thres_m=$1
 thres_HWE=$2
 
+default for both = 1e-5
+
 #Filter missingness
 plink --bfile ${name}_filtered --pheno $phenofile --pheno-name $phenocol --allow-no-sex --test-missing midp --out $output_tag --1 --keep-allele-order
  
