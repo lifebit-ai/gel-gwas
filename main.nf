@@ -78,7 +78,8 @@ ID2 ID2
 
 
 default for both = 1e-5
-
+###################
+#Commands here:
 #Filter missingness
 plink --bfile ${name}_filtered --pheno $phenofile --pheno-name $phenocol --allow-no-sex --test-missing midp --out $output_tag --1 --keep-allele-order
  
@@ -166,3 +167,8 @@ process gwas_2_spa_tests {
 add scripts for plotting
 manhattan plot + qqplot + CI
 
+process plotting
+
+DONT add an argument for user. File is ready:
+
+${params.phenoCol}.${name}.SAIGE.gwas.txt
