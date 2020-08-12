@@ -7,6 +7,10 @@ return(lambda)
 
 #Plotting manhattan plots
 library(data.table)
+
+commandargs
+args[1]
+
 ANA_C1_v1_filt<-fread(SAIGEOUTPUT)
 
 library(qqman)
