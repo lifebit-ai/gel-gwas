@@ -88,10 +88,10 @@ awk '$5 < $thres_m {print}' $output_tag.missing > $output_tag.missing_FAIL
 #Filter HWE 
 plink --bfile $plinkfile --pheno $phenofile --pheno-name $phenocol --allow-no-sex --hwe $thres_HWE midp --out $output_tag.misHWEfiltered --make-just-bim --exclude $output_tag.missing_FAIL --1 --keep-allele-order --keep /re_gecip/BRS/thanos/aggV2_GRM_data/aggV2_bedmerge_30KSNPs_labkeyV9_unrelatedKING.fam
 
-bcftools view  $vcf -Oz -o ${name}_filtered.vcf.gz
-#awk add multi-allelic filter
+bcftools view ${name}_filtered.vcf.gz|awk -F '\t' 'NR==FNR{c[$1$2$3$4]++;next}; c[$1$2$4$5] > 0' ${output_tag}.misHWEfiltered - |bgzip > ${name}.filtered_temp.gz
+bcftools view -h ${name}_filtered.vcf.gz -Oz -o ${name}_filtered.header.gz
+paste ${name}_filtered.header.gz ${name}.filtered_temp.gz > ${name}.filtered_final.gz
 
-${name}_filtered2.vcf.gz
  
  # # # # # # # # # # # # #
 }
