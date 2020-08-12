@@ -4,34 +4,32 @@ lambda=median(chisq,na.rm=TRUE)/qchisq(0.5,1)
 return(lambda)
 }
 
+#Loading required packages
 
-#Plotting manhattan plots
 library(data.table)
-
-commandargs
-args[1]
-
-ANA_C1_v1_filt<-fread(SAIGEOUTPUT)
-
+library(GWASTools)
 library(qqman)
 
-colnames(ANA_C1_v1_filt)[which(colnames(ANA_C1_v1_filt)=="POS")]="BP"
-colnames(ANA_C1_v1_filt)[which(colnames(ANA_C1_v1_filt)=="p.value")]="P"
 
-png("ANA_C1_v1_filt_manhattan.png",width=12,height=6,units='in',res=300)
+#Plotting manhattan plots
+args = commandArgs(trailingOnly=TRUE)
+SAIGE_outputfile=args[1]
+analysis_tag=args[2]
 
-p1<-manhattan(ANA_C1_v1_filt, main = "ANA_C1_v1", cex = 0.6,
-    cex.axis = 0.6, col = c("blue4", "orange3"), suggestiveline = FALSE)
+analysis<-fread(SAIGE_outputfile)
 
+colnames(analysis)[which(colnames(analysis)=="POS")]="BP"
+colnames(analysis)[which(colnames(analysis)=="p.value")]="P"
+
+png(paste0(analysis_tag,"_manhattan.png"),width=12,height=6,units='in',res=300)
+p1<-manhattan(analysis, main = analysis_tag, cex = 0.6, cex.axis = 0.6, col = c("blue4", "orange3"), suggestiveline = FALSE)
 dev.off()
 
 #qqplot
-library(GWASTools)
 
-png("ANA_C1_v1_filt_qqplotCI.png")
-
-qqPlot(ANA_C1_v1_filt$P, main=paste0("ANA_C1_v1",",","lambda=",round(lambda(ANA_C1_v1_filt$P),2)))
-
+png(paste0(analysis_tag,"_qqplotCI.png"))
+qqPlot(analysis$P, main=paste0(analysis_tag,",","lambda=",round(lambda(analysis$P),2)))
 dev.off()
 
+#saveRDS(analysis, file = paste0(analysis_tag,".Rdata"))
 #check whether we can just save the R objects and also give the option for exporting through a future airlock
