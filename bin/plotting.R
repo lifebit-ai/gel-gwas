@@ -31,5 +31,4 @@ png(paste0(analysis_tag,"_qqplotCI.png"))
 qqPlot(analysis$P, main=paste0(analysis_tag,",","lambda=",round(lambda(analysis$P),2)))
 dev.off()
 
-#saveRDS(analysis, file = paste0(analysis_tag,".Rdata"))
 #check whether we can just save the R objects and also give the option for exporting through a future airlock
