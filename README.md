@@ -1,6 +1,6 @@
 # GEL GWAS
 
-![](bin/covid_1_manhattan.png)
+![](http://g.recordit.co/nHhVAboxs7.gif)
 
 ## Example usage
 Read more about parameters [here](https://github.com/lifebit-ai/gel-gwas/blob/marcos-integrates-cb-output/docs/usage_and_parameters.md)
