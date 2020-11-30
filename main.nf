@@ -52,8 +52,7 @@ Channel
   Change platekeys by testing data platekeys
 ---------------------------------------------------*/
 if (params.pheno_data && params.testing){
-  if (params.pheno_data && params.testing){
-    ch_pheno_data.into{ch_pheno_data_test}
+    ch_pheno_data.set{ch_pheno_data_test}
   }
   
   process switch_platekeys {
@@ -136,7 +135,6 @@ if (params.pheno_data && params.testing){
                           --output_tag "${params.output_tag}"
     """
    }
-  }
 }
 
 
@@ -294,13 +292,14 @@ if (params.trait_type == 'binary'){
     # Create PLINK binary from vcf.gz
     plink2 \
       --make-bed \
-      --set-missing-var-ids @:#,\\\$r,\\\$a \
+      --set-missing-var-ids '${params.plink_set_missing_var_ids}' \
       --vcf ${name}_filtered.vcf.gz \
       --out ${name}_filtered \
-      --vcf-half-call m \
+      --vcf-half-call ${params.plink_vcf_half_call} \
       --double-id \
       --set-hh-missing \
-      --new-id-max-allele-len 60 missing
+      --new-id-max-allele-len ${params.plink_new_id_max_allele_len} missing \
+      --output-chr  ${params.plink_output_chr}
 
     #Filter missingness
     plink \
@@ -312,9 +311,10 @@ if (params.trait_type == 'binary'){
       --out ${name} \
       --1 \
       --keep-allele-order \
-      ${extra_plink_filter_missingness_options}
+      ${extra_plink_filter_missingness_options} \
+      --output-chr ${params.plink_output_chr}
 
-    awk '\$5 < ${params.thres_m} {print}' ${name}.missing > ${name}.missing_FAIL
+    awk -v thresm=${params.thres_m} '\$5 < thresm {print}'  ${name}.missing > ${name}.missing_FAIL 
 
     #Filter HWE
     plink \
@@ -328,7 +328,8 @@ if (params.trait_type == 'binary'){
       --exclude ${name}.missing_FAIL \
       --1 \
       --keep-allele-order \
-      ${extra_plink_filter_missingness_options}
+      ${extra_plink_filter_missingness_options} \
+      --output-chr ${params.plink_output_chr}
 
     bcftools view ${name}_filtered.vcf.gz | awk -F '\\t' 'NR==FNR{c[\$1\$4\$6\$5]++;next}; c[\$1\$2\$4\$5] > 0' ${name}.misHWEfiltered.bim - | bgzip > ${name}.filtered_temp.vcf.gz
     bcftools view -h ${name}_filtered.vcf.gz -Oz -o ${name}_filtered.header.vcf.gz
@@ -337,9 +338,9 @@ if (params.trait_type == 'binary'){
     """
   }
 }
+  ch_transform_cb.set{phenoCh_gwas_filtering}
 
-if (params.trait_type != 'binary') {
-  ch_transform_cb.into{phenoCh_gwas_filtering}
+if (params.trait_type == 'quantitative') {
   process gwas_filtering_qt {
   tag "$name"
   publishDir "${params.outdir}/gwas_filtering", mode: 'copy'
@@ -365,13 +366,13 @@ if (params.trait_type != 'binary') {
   # Create PLINK binary from vcf.gz
   plink2 \
     --make-bed \
-    --set-missing-var-ids @:#,\\\$r,\\\$a \
+    --set-missing-var-ids '${params.plink_set_missing_var_ids}' \
     --vcf ${name}_filtered.vcf.gz \
     --out ${name}_filtered \
-    --vcf-half-call m \
+    --vcf-half-call ${params.plink_vcf_half_call} \
     --double-id \
     --set-hh-missing \
-    --new-id-max-allele-len 60 missing
+    --new-id-max-allele-len ${params.plink_new_id_max_allele_len} missing
 
   #Filter HWE
   plink \
@@ -394,14 +395,13 @@ if (params.trait_type != 'binary') {
   }
 }
 
-
 /*--------------------------------------------------
   GWAS Analysis 1 with SAIGE - Fit the null mixed-model
 ---------------------------------------------------*/
 // Create channel for this process
-phenoCh_gwas_filtering.into{phenoCh}
 
 if (params.trait_type == 'binary'){
+  phenoCh_gwas_filtering.set{phenoCh}
   process gwas_1_fit_null_glmm_bin {
     tag "$plink_grm_snps"
     publishDir "${params.outdir}/gwas_1_fit_null_glmm", mode: 'copy'
@@ -816,7 +816,7 @@ if(params.post_analysis){
     """
   }
 }
-if(!params.post_analysis){
+if(!params.post_analysis && !params.skip_report){
   process create_report {
   tag "report"
   publishDir "${params.outdir}/MultiQC/", mode: 'copy'
