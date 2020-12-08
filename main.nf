@@ -844,7 +844,7 @@ if(params.post_analysis){
     """
   }
 }
-if(!params.post_analysis){
+if(!params.post_analysis && !params.skip_report){
   process create_report {
   tag "report"
   publishDir "${params.outdir}/MultiQC/", mode: 'copy'
